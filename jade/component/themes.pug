@@ -1,0 +1,97 @@
+div
+    .container-fluid.banner-heading.find-datasets.curved-shadow
+        .row
+            .col-sm-6.col-sm-offset-3.col-lg-4.col-lg-offset-4
+                h1
+                    span.text-pink Upload
+                    | &nbsp;Data
+                p Mackenzie DataStream is more powerful with more data! To upload your community’s data, please contact us at &nbsp;
+                    a(href="mailto:DataStream@gordonfn.org" style="text-decoration:underline;") DataStream@gordonfn.org
+                    | .&nbsp; To learn more about what information you will need to upload your data, choose the type of data you would like to upload below and check out the CSV template provided.
+    .container.space-above
+        p.text-center.text-muted.p0(ng-if="themesComponent.isWorking")
+            i.fa.fa-spinner.fa-spin
+            |&nbsp;Loading
+
+        .view-themes(ng-repeat="theme in themesComponent.themes track by $index", id="theme-{{theme.theme_id}}", ng-if="theme.sort_order > 0")
+            .panel.panel-default
+                .panel-heading
+                    | {{::theme.name}}
+                ul.nav.nav-tabs
+                    li(ng-class="{active: themesComponent.isSetTab($index, themesComponent.tab.labels.description)}")
+                        a(id="tab-description-{{theme.theme_id}}", ng-click="themesComponent.setTab(themesComponent.tab.labels.description, $index)")
+                            | {{::themesComponent.tab.labels.description}}
+                    li(ng-class="{active: themesComponent.isSetTab($index, themesComponent.tab.labels.metadata)}")
+                        a(id="tab-metadata-{{theme.theme_id}}", ng-click="themesComponent.setTab(themesComponent.tab.labels.metadata, $index)")
+                            | {{::themesComponent.tab.labels.metadata}}
+                    li(ng-class="{active: themesComponent.isSetTab($index, themesComponent.tab.labels.datasets)}")
+                        a(id="tab-datasets-{{theme.theme_id}}", ng-click="themesComponent.setTab(themesComponent.tab.labels.datasets, $index)")
+                            | {{::themesComponent.tab.labels.datasets}}
+                    li(ng-class="{active: themesComponent.isSetTab($index, themesComponent.tab.labels.fields)}")
+                        a(id="tab-fields-{{theme.theme_id}}", ng-click="themesComponent.setTab(themesComponent.tab.labels.fields, $index)")
+                            | {{::themesComponent.tab.labels.fields}}
+
+                .panel-body
+                    .tab-content
+                        .tab-pane(ng-class="{active: themesComponent.isSetTab($index, themesComponent.tab.labels.description)}")
+                            .row.float-middle
+                                .col-sm-12
+                                    | {{::theme.description}}
+                        .tab-pane(ng-class="{active: themesComponent.isSetTab($index, themesComponent.tab.labels.metadata)}")
+                            .row
+                                .col-sm-6(ng-repeat="field in theme.fields('meta') | notHidden")
+                                    .row.metadata-fields
+                                        .col-xs-12.form-group
+                                            .col-xs-4
+                                                strong
+                                                    | {{::field.title}}
+                                            .col-xs-4
+                                                small
+                                                    | {{::field.type}}
+                                            .col-xs-4
+                                                i.fa(ng-class="{'fa-square':!themesComponent.isRequired(field), 'fa-check-square': themesComponent.isRequired(field)}")
+                                                span &nbsp;required
+                        .tab-pane(ng-class="{active: themesComponent.isSetTab($index, themesComponent.tab.labels.datasets)}")
+                            .block-grid-lg-1.form-group.datasets(ng-if="themesComponent.datasets[theme.theme_id] !== undefined")
+                                .block-grid-item(ng-repeat="data in themesComponent.datasets[theme.theme_id]")
+                                    .row.metadata-fields
+                                        .col-xs-4
+                                            a.dataset(href="/#/themes/{{theme.theme_id}}/{{data.upload_id}}")
+                                                i.fa.fa-file-text
+                                                span &nbsp;{{data.title}}
+                                        .col-xs-4
+                                            | {{data.description}}
+                                        .col-xs-4.text-right
+                                            button.btn.btn-danger.btn-xs(name="delete-{{theme.theme_id}}-{{data.title}}", ng-click="themesComponent.deleteDataset($index, theme.theme_id, data)", ng-if="acl.isDataSteward(theme)") Delete
+                            .row(ng-if="themesComponent.datasets[theme.theme_id] === undefined || themesComponent.datasets[theme.theme_id].length === 0")
+                                .col-xs-12.text-center
+                                    br
+                                    p No data sets found.&nbsp;
+                                        a.visible-md.visible-lg(href="", ng-click="themesComponent.newDataset(theme)", ng-if="acl.isDataSteward(theme)") Create new dataset
+                                        | &nbsp;under this theme.
+
+                        .tab-pane(ng-class="{active: themesComponent.isSetTab($index, themesComponent.tab.labels.fields)}")
+                            .row
+                                .col-sm-6(ng-repeat="field in theme.fields('data')")
+                                    .row.metadata-fields
+                                        .col-xs-12.form-group
+                                            .col-xs-4
+                                                strong
+                                                    | {{::field.title}}
+                                                span(ng-if="field.unit") &nbsp; ({{field.unit}})
+                                            .col-xs-4
+                                                small
+                                                    | {{::field.type}}
+                                            .col-xs-4
+                                                span.fa(ng-class="{'fa-square':!themesComponent.isRequired(field), 'fa-check-square': themesComponent.isRequired(field)}")
+                                                | &nbsp;required
+
+                    multi-step(theme="theme", ng-if="theme.theme_id === themesComponent.current.theme.theme_id", new-record-type="themesComponent.newRecordType", ng-show="datasetComponent.newRecordType !== null")
+                .panel-footer
+                    .row
+                        .col-xs-12.text-right
+                            button.btn.btn-default(ng-click="theme.download()") Download CSV template
+                            | &nbsp;
+                            button.btn.btn-danger.has-icon(ng-click="themesComponent.newDataset(theme)", ng-disabled="themesComponent.isUploading()", ng-if="acl.isDataSteward(theme.theme_id)", id="cta-create-new-dataset-{{theme.theme_id}}")
+                                span Create New Dataset
+                                span: i.fa.fa-chevron-right

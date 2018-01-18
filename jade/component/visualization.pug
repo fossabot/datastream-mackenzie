@@ -1,0 +1,79 @@
+div.visualization
+
+    .text-center.text-muted
+        p(ng-if="visComponent.isWorking")
+            i.fa.fa-spinner.fa-spin
+            | &nbsp;Loading
+
+    .row.controls(ng-if="visComponent.showChart && !visComponent.isWorking")
+        .col-xs-6.col-md-3
+            h6 Chart Type
+            div.dropdown.styled-dropdown
+                a.btn.form-control(data-toggle="dropdown", data-target="#")
+                    span(ng-if="visComponent.type === 'scatter' && visComponent.mode ==='lines+markers'") Line
+                    span(ng-if="visComponent.type === 'bar'") Bar
+                    span(ng-if="visComponent.type === 'scatter' && visComponent.mode === 'markers'") Scatter
+                    span(ng-if="visComponent.type === 'box'") Box
+                    span.caret
+                ul.dropdown-menu
+                    li(ng-click="visComponent.toggleChart('scatter', 'lines+markers')") Line
+                    li(ng-click="visComponent.toggleChart('bar')") Bar
+                    li(ng-click="visComponent.toggleChart('scatter', 'markers')") Scatter
+                    li(ng-click="visComponent.toggleChart('box')") Box
+
+        .col-xs-6.col-md-3
+            h6
+                | Y Axis 1 &nbsp;
+                sup
+                    i.fa.fa-circle.small-icon
+            div.dropdown.styled-dropdown
+                a.btn.form-control(data-toggle="dropdown", data-target="#")
+                    | {{visComponent.yaxis1.title}}
+                    span.caret
+                ul.dropdown-menu.x-axis
+                    li(ng-repeat="option in visComponent.yAxisDropDown", ng-click="visComponent.setYAxis(option)")
+                        | {{visComponent.formatYAxisTitle(option.title)}}
+
+        .col-xs-6.col-md-3
+            h6
+                | Y Axis 2 &nbsp;
+                sup
+                    i.fa.fa-plus.small-icon
+            div.dropdown.styled-dropdown
+                a.btn.form-control(data-toggle="dropdown", data-target="#")
+                    | {{visComponent.yaxis2.title}}
+                    span.caret
+                ul.dropdown-menu.x-axis
+                    li(ng-click="visComponent.setY2Axis(null)")
+                        | &nbsp;
+                    li(ng-repeat="option in visComponent.yAxisDropDown", ng-click="visComponent.setY2Axis(option)")
+                        | {{visComponent.formatYAxisTitle(option.title)}}
+
+        .col-xs-6.col-md-3
+            h6 Guidelines
+            div.dropdown.text-mutted.styled-dropdown(ng-if="!visComponent.yaxis2IsEnabled()")
+                a.btn.form-control(data-toggle="dropdown", data-target="#") Select&nbsp;
+                    span.caret
+
+            div.dropdown.styled-dropdown(ng-if="visComponent.yaxis2IsEnabled()")
+                a.btn.form-control(data-toggle="dropdown", data-target="#") Select&nbsp;
+                    span.caret
+                ul.dropdown-menu
+                    li(ng-repeat="guideline in visComponent.guidelines | contains:[visComponent.yaxis1.title, visComponent.yaxis2.title, 'quantile']:(visComponent.visible.length > 1 ? ['formula'] : []) track by $index")
+                        label(style="font-weight: normal;cursor:pointer;", ng-click="visComponent.toggleGuidelines(guideline.label);$event.stopPropagation();")
+                            i(ng-class="{'fa fa-square-o':!guideline.visible,'fa fa-check-square-o':guideline.visible}")
+                            | &nbsp;{{(guideline.type !== 'quantile' ? 'CCME - ' : '') + guideline.label}}
+
+    .row.print-adjust-top(ng-if="visComponent.showChart")
+        .col-xs-12
+            div(id="datachart")
+                div.no-srollbars(id="chart")
+                p &nbsp;
+                div(ng-if="visComponent.embed")
+                    ul.list-columns
+                        li(ng-repeat="location in visComponent.locations", ng-class="{'hidden':!location.active}")
+                            label(style="font-weight: normal;cursor:pointer;", ng-click="visComponent.toggleLocation(location)", ng-class="{'print':visComponent.embed}")
+                                span.badge(style="border: solid 5px {{location.color}}; font-size: 0;padding: 0;") &nbsp;
+                                | &nbsp; {{location.name}}
+
+    div(id="page-is-loaded" ng-if="visComponent.isLoaded") &nbsp;

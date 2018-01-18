@@ -1,0 +1,129 @@
+div
+    .container.space-above(ng-if="manageUsersComponent.isWorking")
+        br
+        p.text-center.text-muted.p0
+            i.fa.fa-spinner.fa-spin
+            |&nbsp;Loading
+
+    .container
+        .row(ng-if="!manageUsersComponent.isWorking")
+            .col-xs-12
+                h1 Settings
+                .table-responsive
+                    table.table
+                        thead
+                            tr
+                                th.col-xs-2 Email
+                                th.col-xs-1.hidden-xs.hidden-sm Nickname
+                                th.col-xs-2.hidden-xs.hidden-sm Member Since
+                                th.col-xs-2.hidden-xs.hidden-sm Role
+                                th.col-xs-4.hidden-xs Meta
+                                th.col-xs-1
+                        tbody
+                            tr(ng-repeat="user in manageUsersComponent.users", ng-if="acl.isAdmin() || (user.roles.admin === undefined && acl.isDataSteward()) || user.user_id === acl.getProfile('user_id')")
+                                td.col {{user.email}}
+                                td.col.hidden-xs.hidden-sm {{user.nickname}}
+                                td.col.hidden-xs.hidden-sm {{user.created_at | date}}
+                                td.col.hidden-xs.hidden-sm
+                                    div(ng-show="manageUsersComponent.form.editing.email === user.email")
+                                        form
+                                            .form-group(ng-if="acl.isAdmin()")
+                                                .row
+                                                    .col-md-6 Is Admin?
+                                                    .col-md-6
+                                                        input(type="checkbox", ng-checked="manageUsersComponent.form.editing.isAdmin()", ng-click="manageUsersComponent.toggleAdmin()")
+                                            .form-group(ng-if="!manageUsersComponent.form.editing.isAdmin()")
+                                                .div(ng-repeat="theme in manageUsersComponent.themes", ng-if="acl.isDataSteward(theme)")
+                                                    p {{theme.name}}:
+                                                        br
+                                                        select(ng-model="manageUsersComponent.form.editing.app_metadata.roles[theme.theme_id]")
+                                                            option.hidden(value="", selected="selected")
+                                                            option(value="{{option}}", ng-repeat="option in manageUsersComponent.form.options track by $index") {{option | ucwords}}
+
+
+                                    div(ng-show="manageUsersComponent.form.editing.email !== user.email")
+                                        div(ng-if="user.isPublic()") Public
+                                        div(ng-repeat="(theme,role) in user.app_metadata.roles", ng-if="!user.isPublic() && role !== 'none'")
+                                            | {{theme|ucwords}} - {{role|ucwords}}
+                                td.hidden-xs
+                                    div
+                                        span(ng-class="{'text-muted': !user.app_metadata.contact_type}") Contact Type:&nbsp;
+                                        span(ng-show="manageUsersComponent.form.editing === null") {{user.app_metadata.contact_type}}
+                                        p(ng-show="manageUsersComponent.form.editing.email === user.email")
+                                            select.form-control(ng-model="manageUsersComponent.form.editing.app_metadata.contact_type")
+                                                option Principal Investigator
+                                                option Originator
+                                                option Collaborator
+                                                option Point of Contact
+
+                                    div
+                                        span(ng-class="{'text-muted': !user.app_metadata.first_name}") First Name:&nbsp;
+                                        span(ng-show="manageUsersComponent.form.editing === null") {{user.app_metadata.first_name}}
+                                        p(ng-show="manageUsersComponent.form.editing.email === user.email")
+                                            input.form-control(type="text", ng-model="manageUsersComponent.form.editing.app_metadata.first_name")
+
+                                    div
+                                        span(ng-class="{'text-muted': !user.app_metadata.last_name}") Last Name:&nbsp;
+                                        span(ng-show="manageUsersComponent.form.editing === null") {{user.app_metadata.last_name}}
+                                        p(ng-show="manageUsersComponent.form.editing.email === user.email")
+                                            input.form-control(type="text", ng-model="manageUsersComponent.form.editing.app_metadata.last_name")
+
+                                    div
+                                        span(ng-class="{'text-muted': !user.app_metadata.address}") Address:&nbsp;
+                                        span(ng-show="manageUsersComponent.form.editing === null") {{user.app_metadata.address}}
+                                        p(ng-show="manageUsersComponent.form.editing.email === user.email")
+                                            input.form-control(type="text", ng-model="manageUsersComponent.form.editing.app_metadata.address")
+
+                                    div
+                                        span(ng-class="{'text-muted': !user.app_metadata.city}") City:&nbsp;
+                                        span(ng-show="manageUsersComponent.form.editing === null") {{user.app_metadata.city}}
+                                        p(ng-show="manageUsersComponent.form.editing.email === user.email")
+                                            input.form-control(type="text", ng-model="manageUsersComponent.form.editing.app_metadata.city")
+
+                                    div
+                                        span(ng-class="{'text-muted': !user.app_metadata.province}") Province:&nbsp;
+                                        span(ng-show="manageUsersComponent.form.editing === null") {{user.app_metadata.province}}
+                                        p(ng-show="manageUsersComponent.form.editing.email === user.email")
+                                            input.form-control(type="text", ng-model="manageUsersComponent.form.editing.app_metadata.province")
+                                    div
+                                        span(ng-class="{'text-muted': !user.app_metadata.country}") Country:&nbsp;
+                                        span(ng-show="manageUsersComponent.form.editing === null") {{user.app_metadata.country}}
+                                        p(ng-show="manageUsersComponent.form.editing.email === user.email")
+                                            input.form-control(type="text", ng-model="manageUsersComponent.form.editing.app_metadata.country")
+                                    div
+                                        span(ng-class="{'text-muted': !user.app_metadata.phone_number}") Phone Number:&nbsp;
+                                        span(ng-show="manageUsersComponent.form.editing === null") {{user.app_metadata.phone_number}}
+                                        p(ng-show="manageUsersComponent.form.editing.email === user.email")
+                                            input.form-control(type="text", ng-model="manageUsersComponent.form.editing.app_metadata.phone_number")
+                                    hr
+                                    div
+                                        span(ng-class="{'text-muted': !user.app_metadata.organization}") Organization:&nbsp;
+                                        span(ng-show="manageUsersComponent.form.editing === null") {{user.app_metadata.organization}}
+                                        p(ng-show="manageUsersComponent.form.editing.email === user.email")
+                                            input.form-control(type="text", ng-model="manageUsersComponent.form.editing.app_metadata.organization")
+                                    div
+                                        span(ng-class="{'text-muted': !user.app_metadata.location}") Location:&nbsp;
+                                        span(ng-show="manageUsersComponent.form.editing === null") {{user.app_metadata.location}}
+                                        p(ng-show="manageUsersComponent.form.editing.email === user.email")
+                                            input.form-control(type="text", ng-model="manageUsersComponent.form.editing.app_metadata.location")
+                                    div
+                                        span(ng-class="{'text-muted': !user.app_metadata.place_of_employment}") Place of Employment:&nbsp;
+                                        span(ng-show="manageUsersComponent.form.editing === null") {{user.app_metadata.place_of_employment}}
+                                        p(ng-show="manageUsersComponent.form.editing.email === user.email")
+                                            input.form-control(type="text", ng-model="manageUsersComponent.form.editing.app_metadata.place_of_employment")
+                                    div
+                                        span(ng-class="{'text-muted': !user.app_metadata.area_of_expertise}") Area of Expertise:&nbsp;
+                                        span(ng-show="manageUsersComponent.form.editing === null") {{user.app_metadata.area_of_expertise}}
+                                        p(ng-show="manageUsersComponent.form.editing.email === user.email")
+                                            input.form-control(type="text", ng-model="manageUsersComponent.form.editing.app_metadata.area_of_expertise")
+
+                                    form
+                                        .form-group(ng-show="manageUsersComponent.form.editing.email === user.email")
+                                            button.btn.btn-danger(ng-click="manageUsersComponent.save()", ng-disabled="manageUsersComponent.form.isWorking")
+                                                i(ng-class="{'fa fa-spinner fa-spin':manageUsersComponent.form.isWorking}")
+                                                | &nbsp;Save User
+                                            | &nbsp;
+                                            button.btn.btn-default(ng-click="manageUsersComponent.cancel()", ng-disabled="manageUsersComponent.form.isWorking") Cancel
+                                td
+                                    a(href="", ng-click="manageUsersComponent.edit(user)")
+                                        i.fa.fa-pencil

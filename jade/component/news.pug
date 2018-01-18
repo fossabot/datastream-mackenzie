@@ -1,0 +1,18 @@
+section#news-container
+    .curved-shadow.random-heading(style="background-image: url(/img/pmd-web.jpg);")
+    .container.text-page
+        h2
+            | DataStream News&nbsp;
+            span.badge.badge-warning(ng-show="storyCount>0") {{storyCount}} Stories
+        hr
+        .story(ng-repeat="story in stories track by $index")
+            a(class="story-link-{{$index}}" ng-href="{{story.link}}"): h4 {{story.title}}
+            div(ng-bind-html="story.customSnippet")
+            .back-link.space-above
+                a(ng-href="{{story.link}}")
+                    | Read more
+                    | &nbsp;
+                    span.fa.fa-chevron-right
+            hr
+        .space-above &nbsp;
+        .space-above &nbsp;

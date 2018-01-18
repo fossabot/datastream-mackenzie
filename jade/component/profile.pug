@@ -1,0 +1,27 @@
+.view-profile
+
+    .profile
+        div.bg-img(style="background-image:url(/img/{{profileComponent.theme_id}}.jpg);background-size:100%;")
+            img.img-circle(src="/img/logo-person.png")
+            .name {{profileComponent.user.nickname}}
+            .text-center(ng-if="profileComponent.user.organization") Organization: {{profileComponent.user.organization}}
+            .text-center(ng-if="profileComponent.user.location") Location: {{profileComponent.user.location}}
+            .text-center(ng-if="profileComponent.user.place_of_employment") Place of Employment: {{profileComponent.user.place_of_employment}}
+            .text-center(ng-if="profileComponent.user.area_of_expertise") Area of Expertise: {{profileComponent.user.area_of_expertise}}
+            p &nbsp;
+
+        .info
+            .row
+                .col-xs-12.text-center
+                    a(href="")
+                        strong {{profileComponent.results.length}}
+                        br
+                        ng-pluralize(count="profileComponent.results.length" when="{0: 'No datasets', 1: 'Dataset', 'other': 'Datasets'}")
+    .panel.panel-default
+        .panel-body
+            p.text-center.text-muted.p0(ng-if="profileComponent.isWorking")
+                i.fa.fa-spinner.fa-spin
+                |&nbsp;Working
+
+            div(ng-show="!profileComponent.isWorking")
+                search-results(results="profileComponent.results", type="'map'", map="'false'")

@@ -1,0 +1,346 @@
+.dataset
+    div(ng-if="datasetComponent.embed")
+        leaflet(id="datamap",
+            center="datasetComponent.mapping.center",
+            layers="datasetComponent.mapping.layers",
+            ng-style="datasetComponent.getStyle()",
+            defaults="datasetComponent.mapping.defaults",
+            show-groups="true",
+            overlays-title="Overlays Layers",
+            icons="datasetComponent.layercontrol.icons")
+        visualization.visualization(
+            data="datasetComponent.visData",
+            theme="datasetComponent.theme",
+            tab="datasetComponent.tab",
+            upload-id="datasetComponent.params.upload_id",
+            guidelines="datasetComponent.guidelines",
+            is-working="datasetComponent.isWorking",
+            meta-fields="datasetComponent.theme.fields('meta')",
+            meta-values="datasetComponent.meta",
+            locations="datasetComponent.locations",
+            type="datasetComponent.visType",
+            yaxis1="datasetComponent.yaxis1",
+            yaxis2="datasetComponent.yaxis2",
+            xcolumn="datasetComponent.xcolumn",
+            min-date="datasetComponent.minDate",
+            max-date="datasetComponent.maxDate",
+            start-date="datasetComponent.startDate",
+            end-date="datasetComponent.endDate",
+            embed="datasetComponent.embed")
+    div.loading-animation-parent(ng-if="!datasetComponent.embed")
+        p.text-center.text-muted.p0.loading-animation(ng-if="datasetComponent.isWorking")
+            i.fa.fa-spinner.fa-spin
+            |&nbsp;Retrieving results...
+
+        leaflet(id="datamap",
+            center="datasetComponent.mapping.center",
+            layers="datasetComponent.mapping.layers",
+            ng-style="datasetComponent.getStyle()",
+            defaults="datasetComponent.mapping.defaults",
+            controls="datasetComponent.mapping.controls",
+            show-groups="true",
+            overlays-title="Overlays Layers",
+            icons="datasetComponent.layercontrol.icons")
+
+        .omnibox(ng-style="datasetComponent.getStyle()")
+            .chart-button(id="chart-button", ng-click="datasetComponent.showOverlay = !datasetComponent.showOverlay; datasetComponent.getSize();")
+                    i.fa.fa-area-chart.fa-2x(ng-if="!datasetComponent.showOverlay")
+                    i.fa.fa-map.fa-2x(ng-if="datasetComponent.showOverlay")
+
+            .title-box
+                a.back-arrow(ng-href="", ng-click="datasetComponent.goBack()")
+                    | &nbsp;
+                h5(name="meta-title") {{datasetComponent.meta.title}}
+            .content(ng-scrollbars="", ng-scrollbars-config="datasetComponent.scrollbarsConfig")
+                div(ng-show="!datasetComponent.showMeta")
+                    .buttons
+                        ul
+                            li
+                                button(ng-click="datasetComponent.print()", ng-disabled="datasetComponent.isPrinting || datasetComponent.isWorking")
+                                    i.fa.fa-file-pdf-o.fa-2x(ng-if="!datasetComponent.isPrinting")
+                                    i.fa.fa-spinner.fa-spin.fa-2x(ng-if="datasetComponent.isPrinting")
+                                    | PDF<br />REPORT
+                            li
+                                .btn-group
+                                    button(type="button" ng-click="datasetComponent.showDisclaimer('Download Dataset', true)")
+                                        i.fa.fa-cloud-download.fa-2x
+                                        | DOWNLOAD
+                            li
+                                button(type="button", data-toggle="modal", data-target="#modalAttachments")
+                                    i.fa.fa-paperclip.fa-2x
+                                    | ATTACHMENTS
+                            li
+                                button(ng-click="datasetComponent.showDisclaimer('Data Disclaimer', false)")
+                                    i.fa.fa-sticky-note.fa-2x
+                                    | DATA DISCLAIMER
+                    .group
+                        .meta-title
+                            button(ng-click="datasetComponent.toggleMeta()")
+                                | Meta, Contact & Program Information
+                                i.fa.fa-angle-right.fa-2x.pull-right
+                    .group
+                        .section
+                            h6 Date Range
+                            .row.daterange-picker
+                                .col-md-3.from
+                                    input.date(type="text", id="daterangepickerFrom")
+                                .col-md-1.spacer to
+                                .col-md-8.to
+                                    input.date(type="text", id="daterangepickerTo")
+
+                        .section
+                            h6 Region
+                            div.dropdown
+                                a.btn.btn-default.form-control.region(data-toggle="dropdown", data-target="#")
+                                    span.caret
+                                    span(ng-if="datasetComponent.search.region.length === 0") All Regions
+                                    span(ng-if="datasetComponent.search.region.length > 0") {{datasetComponent.search.region}}
+                                ul.dropdown-menu.pre-scrollable.region-dropdown
+                                    li
+                                        a(ng-click="datasetComponent.setRegion('none')") All Regions
+                                    li(ng-repeat="region in datasetComponent.regions")
+                                        a(ng-click="datasetComponent.setRegion(region)") {{region}}
+                        .section.last.locations
+                            h6 Monitoring Locations
+                                button.select-all(ng-click="datasetComponent.setLocations('all')")
+                                    | Select all
+                            ul.padding-bottom
+                                li(ng-repeat="location in datasetComponent.locations | filter: (datasetComponent.search.region.length > 0 || '') && {visible:true}", ng-click="datasetComponent.setLocations(location.id)")
+                                    i.fa.fa-circle.legend(ng-style="datasetComponent.getCircleColor(location.color)", ng-class="{'inactive':!location.active}")
+                                    .title {{location.name}}
+                div(ng-show="datasetComponent.showMeta")
+                    .group
+                        .meta-title Meta Information
+                        .section
+                            h6 Theme
+                            | {{datasetComponent.theme.name}} </br>
+                            | {{datasetComponent.theme.description}}
+                        .section(ng-repeat="field in datasetComponent.theme.fields('meta')", ng-if="field.name !== 'location' && datasetComponent.meta[field.name]")
+                            h6 {{field.title}}
+                            | {{datasetComponent.meta[field.name]}}
+                        .section
+                            h6 Last Updated
+                            | {{datasetComponent.meta.modified | date: 'MMM d, y'}}
+                    .group
+                        .meta-title Contact Information
+                        .section(ng-repeat="field in ['contact_type', 'first_name', 'last_name', 'place_of_employment', 'email', 'organization', 'location']", ng-if="datasetComponent.meta.user[field]")
+                            h6 {{field | ucwords}}
+                            | {{datasetComponent.meta.user[field]}}
+                    .group.padding-bottom
+                        .meta-title Program Information
+                        .section(ng-repeat="field in datasetComponent.getProgramInformation()")
+                            div(ng-if="['start_date', 'end_date', 'bounding_box', 'data_props'].indexOf(field) === -1")
+                                h6 {{field.replace("doi","DOI").replace("iso","ISO").replace("pdc","PDC") | ucwords}}
+                                | {{datasetComponent.meta.program[field]}}
+                            div(ng-if="field === 'start_date'")
+                                h6 Start Date
+                                | {{datasetComponent.meta.program.data_props.start_date | date: 'longDate'}}
+                            div(ng-if="field === 'end_date'")
+                                h6 End Date
+                                | {{datasetComponent.meta.program.data_props.end_date | date: 'longDate'}}
+                            div(ng-if="field === 'bounding_box'")
+                                h6 Bounding Box
+                                | {{datasetComponent.getBoundingBox(datasetComponent.meta.program.data_props.bounding_box)}}
+        .map-overlay(id="map-overlay", ng-style="datasetComponent.getStyle('map-overlay')")
+            ul.nav.nav-tabs
+                li(ng-class="{active: datasetComponent.isSetTab('visualization'), disabled: datasetComponent.isWorking}")
+                    a(id="tab-visualization", ng-click="datasetComponent.setTab('visualization')") VISUALIZATION
+                li(ng-class="{active: datasetComponent.isSetTab('dataset'), disabled: datasetComponent.isWorking}")
+                    a(id="tab-dataset", ng-click="datasetComponent.setTab('dataset')") DATASET
+                li(ng-class="{statistics, active: datasetComponent.isSetTab('statistics'), disabled: datasetComponent.isWorking}")
+                    a(id="tab-statistics", ng-click="datasetComponent.setTab('statistics')") STATISTICS
+
+            .tab-content
+                .tab-pane.active
+                    div(ng-show="datasetComponent.isSetTab('dataset')")
+                        ul.list-inline(ng-if="acl.isDataContributor(datasetComponent.theme.theme_id)")
+                            li
+                                button.btn.btn-danger(id="cta-add-a-record", ng-click="datasetComponent.setNewRecordType('add-record')", ng-disabled="datasetComponent.isWorking") Add record
+                            li
+                                button.btn.btn-danger(id="cta-upload-csv", ng-click="datasetComponent.setNewRecordType('dataset')", ng-disabled="datasetComponent.isWorking") Upload CSV
+
+                        multi-step(theme="datasetComponent.theme", new-record-type="datasetComponent.newRecordType", ng-show="datasetComponent.newRecordType !== null", locations="datasetComponent.locations")
+
+                        .text-center.text-muted
+                            p(ng-if="datasetComponent.isWorking")
+                                i.fa.fa-spinner.fa-spin
+                                | &nbsp;Loading
+
+                        .table-responsive.heading-container(ng-show="!datasetComponent.isWorking")
+                            table.table.heading
+                                thead
+                                    th(ng-repeat="field in datasetComponent.theme.fields('data')", style="cursor: pointer;", ng-click="datasetComponent.sort(field.name)")
+                                        | {{field.title}}
+                                        small(ng-if="field.unit") &nbsp; ({{field.unit}})
+                                        i.fa.pull-right(ng-class="{'fa-sort-asc': (datasetComponent.orderBy.name === field.name && datasetComponent.orderBy.sort === 'asc'), 'fa-sort-desc': (datasetComponent.orderBy.name === field.name && datasetComponent.orderBy.sort === 'desc')}")
+
+                        .table-responsive.dataset-container(ng-show="!datasetComponent.isWorking")
+                            table.table
+                                tbody
+                                    tr(ng-repeat="data in datasetComponent.data.data track by $index",
+                                        ng-init="$last ? datasetComponent.setIsWorking(false) : null", dataset-row="{{datasetComponent.rowHtml}}")
+
+                    div(ng-show="datasetComponent.isSetTab('visualization') || datasetComponent.isSetTab('summary')")
+                        visualization.visualization(
+                            data="datasetComponent.visData",
+                            theme="datasetComponent.theme",
+                            tab="datasetComponent.tab",
+                            upload-id="datasetComponent.params.upload_id",
+                            guidelines="datasetComponent.guidelines",
+                            is-working="datasetComponent.isWorking",
+                            meta-fields="datasetComponent.theme.fields('meta')",
+                            meta-values="datasetComponent.meta",
+                            locations="datasetComponent.locations",
+                            type="datasetComponent.visType",
+                            yaxis1="datasetComponent.yaxis1",
+                            yaxis2="datasetComponent.yaxis2",
+                            xcolumn="datasetComponent.xcolumn",
+                            min-date="datasetComponent.minDate",
+                            max-date="datasetComponent.maxDate",
+                            start-date="datasetComponent.startDate",
+                            end-date="datasetComponent.endDate",
+                            embed="datasetComponent.embed")
+
+                    div(ng-show="datasetComponent.isSetTab('statistics')")
+                        .row(id="summary")
+                            .col-xs-12
+                                h4 Summary Statistics - {{datasetComponent.yAxis.title}}
+                                .table-responsive
+                                    table.table.print-table-layout
+                                        thead
+                                            tr
+                                                th(ng-repeat="sum in datasetComponent.overallSummary" class="text-right") {{sum.label}}
+                                        tbody
+                                            tr
+                                                td(ng-repeat="sum in datasetComponent.overallSummary" class="text-right") {{sum.val}}
+                                .table-responsive
+                                    table.table.print-table-layout
+                                        thead
+                                            tr
+                                                th Location
+                                                th(class="text-right") Count
+                                                th(class="text-right") Min
+                                                th(class="text-right") Max
+                                                th(class="text-right") Mean
+                                                th(class="text-right") SD
+                                                th(class="text-right no-wrap") 5
+                                                th(class="text-right no-wrap") 10
+                                                th(class="text-right") 1Q
+                                                th(class="text-right") Median
+                                                th(class="text-right") 3Q
+                                                th(class="text-right no-wrap") 90
+                                                th(class="text-right no-wrap") 95
+                                        tbody
+                                            tr(ng-repeat="(key, value) in datasetComponent.summaryData")
+                                                td {{key|ucwords}}
+                                                td(class="text-right") {{value.length}}
+                                                td(class="text-right") {{datasetComponent.ss.min(value).toFixed(2)}}
+                                                td(class="text-right") {{datasetComponent.ss.max(value).toFixed(2)}}
+                                                td(class="text-right") {{datasetComponent.ss.mean(value).toFixed(2)}}
+                                                td(class="text-right") {{datasetComponent.ss.standardDeviation(value).toFixed(2)}}
+                                                td(class="text-right") {{datasetComponent.ss.quantile(value,0.05).toFixed(2)}}
+                                                td(class="text-right") {{datasetComponent.ss.quantile(value,0.10).toFixed(2)}}
+                                                td(class="text-right") {{datasetComponent.ss.quantile(value,0.25).toFixed(2)}}
+                                                td(class="text-right") {{datasetComponent.ss.quantile(value,0.5).toFixed(2)}}
+                                                td(class="text-right") {{datasetComponent.ss.quantile(value,0.75).toFixed(2)}}
+                                                td(class="text-right") {{datasetComponent.ss.quantile(value,0.90).toFixed(2)}}
+                                                td(class="text-right") {{datasetComponent.ss.quantile(value,0.95).toFixed(2)}}
+                                            tr(ng-if="datasetComponent.overallData")
+                                                td(class="text-right bold") Total Selected Locations
+                                                td(class="text-right bold") {{datasetComponent.data.data.length}}
+                                                td(class="text-right bold") {{datasetComponent.ss.min(datasetComponent.overallData).toFixed(2)}}
+                                                td(class="text-right bold") {{datasetComponent.ss.max(datasetComponent.overallData).toFixed(2)}}
+                                                td(class="text-right bold") {{datasetComponent.ss.mean(datasetComponent.overallData).toFixed(2)}}
+                                                td(class="text-right bold") {{datasetComponent.ss.standardDeviation(datasetComponent.overallData).toFixed(2)}}
+                                                td(class="text-right bold") {{datasetComponent.ss.quantile(datasetComponent.overallData,0.05).toFixed(2)}}
+                                                td(class="text-right bold") {{datasetComponent.ss.quantile(datasetComponent.overallData,0.10).toFixed(2)}}
+                                                td(class="text-right bold") {{datasetComponent.ss.quantile(datasetComponent.overallData,0.25).toFixed(2)}}
+                                                td(class="text-right bold") {{datasetComponent.ss.quantile(datasetComponent.overallData,0.5).toFixed(2)}}
+                                                td(class="text-right bold") {{datasetComponent.ss.quantile(datasetComponent.overallData,0.75).toFixed(2)}}
+                                                td(class="text-right bold") {{datasetComponent.ss.quantile(datasetComponent.overallData,0.90).toFixed(2)}}
+                                                td(class="text-right bold") {{datasetComponent.ss.quantile(datasetComponent.overallData,0.95).toFixed(2)}}
+
+    .container
+        .modal(id="modalMapHelp")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        button.close(type="button", data-dismiss="modal", aria-label="Close")
+                            span(aria-hidden="true") &times;
+                        h2.modal-title Tips for Exploring Data
+                    .modal-body
+                        p
+                            ul.list-unstyled
+                                li 1. Drop Down Menus:
+                                li: ul.list-unstyled
+                                    li a. Select regions or locations using the drop-down menus found under the map.
+                                    li b. All locations you select will be highlighted on the map and compared on the graph below.
+                                li &nbsp;
+                                li 2. Map:
+                                li: ul.list-unstyled
+                                    li a. Add or remove locations by clicking on map pins.
+                                    li b. Use the shape tools on the top left of the map to select multiple locations at once.
+                                    li c. All locations you select will be highlighted on the map and compared on the graph below.
+                    .modal-footer
+                        button.btn.btn-danger(data-dismiss="modal") Close
+        .modal(id="modalAttachments")
+            .modal-dialog
+                .modal-content
+                    .modal-header
+                        button.close(data-dismiss="modal")
+                            span &times;
+                        h2.modal-title Attachments
+                    .modal-body
+                        attachments(ng-if="datasetComponent.theme", theme="datasetComponent.theme", upload-id="datasetComponent.params.upload_id")
+                    .modal-footer
+                        button.btn.btn-primary(data-dismiss="modal") Close
+        .modal(id="modalDownloadDataset")
+            .modal-dialog(ng-class="{'modal-lg': datasetComponent.disclaimer.download, 'modal-md': !datasetComponent.disclaimer.download}")
+                .modal-content
+                    .modal-header
+                        button.close(data-dismiss="modal")
+                            span &times;
+                        h2(style="margin-top:5px;") {{datasetComponent.disclaimer.title}}
+                    .modal-body
+                        .row
+                            div(ng-class="{'col-md-6 col-xs-12': datasetComponent.disclaimer.download, 'col-md-12': !datasetComponent.disclaimer.download}")
+                                h1 Terms of Usage
+                                div(ng-bind-html="datasetComponent.disclaimer.body")
+                            .col-md-6.col-xs-12(ng-if="datasetComponent.disclaimer.download")
+                                h4 Step 1: Select Locations
+                                p Select whether to download all locations or only selected locations
+                                select(ng-model="datasetComponent.disclaimer.downloadType")
+                                    option(value="", selected="selected") Select One
+                                    option(value="all") All Locations
+                                    option(value="selected") Selected Locations
+                                br
+                                h4 Step 2: Select Properties
+                                p(ng-if="datasetComponent.theme.fields('data').length > 20") Scroll down the list to see more properties
+                                p
+                                    a(href="#", ng-click="datasetComponent.toggleDownloadAll();$event.preventDefault();") Select all
+                                    | &nbsp;|&nbsp;
+                                    a(href="#", ng-click="datasetComponent.toggleDownloadNone();$event.preventDefault();") Clear selection
+                                .row
+                                    div(ng-class="{scrollable: datasetComponent.theme.fields('data').length > 20}")
+                                        .col-md-6(ng-repeat="field in datasetComponent.theme.fields('data')", style="cursor: pointer;")
+                                            label
+                                                input(type="checkbox", class="download-property" ng-click="datasetComponent.toggleDownloadProperty(field.name)", ng-checked="datasetComponent.properties.data.indexOf(field.name) > -1")
+                                                | &nbsp;{{field.title}}
+                                                small(ng-if="field.unit") &nbsp; ({{field.unit}})
+                                br(ng-if="datasetComponent.theme.fields('data').length > 20")
+                                h4 Step 3: Select Intended Data Usage
+                                div(ng-show="datasetComponent.disclaimer.download")
+                                    p Select intended data usage to begin download
+                                    select(ng-model="datasetComponent.downloadPurpose")
+                                        option(value="", selected="selected") Select One
+                                        option(value="government") Government
+                                        option(value="indigenous-peoples") Indigenous Peoples
+                                        option(value="industry") Industry
+                                        option(value="educational") Educational
+                                        option(value="not-for-profit") Not-for-Profit
+                                        option(value="other") Other
+                                p &nbsp;
+                                button(class="btn btn-danger has-icon", ng-click="datasetComponent.download()", ng-disabled="datasetComponent.downloadPurpose === '' || datasetComponent.properties.data.length === 0 || datasetComponent.disclaimer.downloadType === '' || !datasetComponent.disclaimer.downloadType")
+                                    span Download
+                    .modal-footer
+                        button.btn.btn-primary(data-dismiss="modal") Close

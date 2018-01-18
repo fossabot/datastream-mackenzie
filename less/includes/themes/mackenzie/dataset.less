@@ -1,0 +1,376 @@
+.dataset {
+    .leaflet-draw {
+        margin-left: 405px !important;
+    }
+
+    overflow: hidden;
+
+    .inline {
+        display: inline;
+    }
+
+    .list-columns {
+        padding-left: 50px;
+        -moz-column-count: 4;
+        -moz-column-gap: 20px;
+        -webkit-column-count: 4;
+        -webkit-column-gap: 20px;
+        column-count: 2;
+        column-gap: 20px;
+        list-style: none;
+    }
+
+    .leaflet-touch .leaflet-control-layers a {
+        width: 30px;
+        height: 30px;
+    }
+
+    .location-name-icon {
+        width: auto !important;
+        white-space: nowrap;
+        font-size: 0.9em;
+        padding-left: 30px;
+
+        a {
+            color: #333;
+            text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+
+            &:hover {
+                text-decoration: none;
+                color: #396d85;
+            }
+        }
+    }
+
+    .marker-cluster div {
+        color: #fff !important;
+        background-color: rgba(56,108,133, 0.6) !important;
+    }
+
+    .marker-cluster-small,
+    .marker-cluster-medium,
+    .marker-cluster-large {
+        background-color: rgba(56,108,133, 0.6) !important;
+    }
+
+    .marker-cluster.marker-cluster-hover div {
+        color: #386c85 !important;
+        background-color: rgba(255, 255, 255, 0.6) !important;
+    }
+
+    .leaflet-overlay-pane {
+        z-index: 700;
+    }
+
+    .marker-cluster div {
+        color: #fff !important;
+        background-color: rgba(56,108,133, 0.6) !important;
+    }
+
+    .marker-cluster-small,
+    .marker-cluster-medium,
+    .marker-cluster-large {
+        background-color: rgba(56,108,133, 0.6) !important;
+    }
+
+    .leaflet-overlay-pane {
+        z-index: 700;
+    }
+
+    .styled-dropdown {
+        color: #000;
+        font-weight: 300;
+        border-width: 0;
+        border-bottom: solid 1px #e0e0e0;
+        border-radius: 0;
+        -webkit-appearance: none;
+        width: 100%;
+        height: 40px;
+        background-color: #fff;
+        a {
+            text-align: left;
+            line-height: 28px;
+            color: #000;
+            box-shadow: none;
+        }
+        .caret {
+            float: right;
+            margin-top: 15px;
+            color: #808284;
+        }
+    }
+
+    .dropdown-menu {
+        z-index: 9999;
+        padding: 10px;
+        li {
+            cursor: pointer;
+        }
+
+        &.x-axis {
+            max-height: 200px;
+            overflow-y: scroll;
+        }
+    }
+
+    .chart-button {
+        position: absolute;
+        left: 320px;
+        bottom: 15px;
+        color: #fff;
+        background-color: #e93f72;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        width: 60px;
+        height: 60px;
+        z-index: 1001;
+        text-align: center;
+        line-height: 69px;
+        border-radius: 30px;
+        cursor: pointer;
+    }
+
+    .map-overlay {
+        position: absolute;
+        left: 395px;
+        z-index: 1000;
+        background-color: #fff;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        margin: 20px;
+        .nav-tabs {
+            font-size: 14px;
+            font-weight: 300;
+            li {
+                width: 33.3%;
+                a {
+                    padding: 15px;
+                    color: #555555;
+                    margin-right: 0;
+                    border-width: 0;
+                    border-bottom: 2px solid #e0e0e0;
+                }
+            }
+            li.active a {
+                color: #e93f72;
+                border-bottom: 2px solid #e93f72;
+            }
+        }
+        .tab-content {
+            padding: 20px;
+            width: 100%;
+            height: 100%;
+            overflow: scroll;
+        }
+    }
+
+    h6 {
+        color: #808284;
+        font-weight: 400;
+        margin: 16px 0 0 0;
+    }
+
+    .inactive {
+        border-color: #808284 !important;
+        color: #808284 !important;
+    }
+
+    .omnibox {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 395px;
+        z-index: 1000;
+        background-color: #fff;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+
+        .title-box {
+            width: 100%;
+            color: #fff;
+            background-color: #396d85;
+            padding: 15px;
+            h5 {
+                color: #fff;
+                font-size: 17px;
+                margin-bottom: 0;
+                margin-top: 20px;
+            }
+            .back-arrow, .help {
+                background-color: #396d85;
+                border: none;
+                color: #fff;
+                cursor: pointer;
+            }
+
+            .back-arrow {
+                background: no-repeat url(/img/nav_sprites.png) 0 -50px;
+                background-size: 24px 199px;
+                height: 24px;
+                width: 24px;
+                display: block;
+
+                &:hover {
+                    text-decoration: none;
+                }
+            }
+        }
+
+        .content {
+            overflow: scroll;
+            height: 100%;
+        }
+
+        .buttons {
+            padding: 10px 0;
+            border-bottom: solid 1px #e0e0e0;
+            ul li {
+                display: inline-block;
+                color: #396d85;
+                width: 92px;
+                text-align: center;
+                font-size: 11px;
+                font-weight: 400;
+                button {
+                    background-color: #fff;
+                    border: none;
+                    .fa {
+                        display: block;
+                        margin-bottom: 5px;
+
+                    }
+                    &[disabled] {
+                        color: #e0e0e0;
+                        cursor: not-allowed;
+                    }
+                }
+            }
+        }
+
+        .group {
+            position: relative;
+            padding: 8px 15px;
+            border-bottom: solid 1px #e0e0e0;
+            .legend {
+                padding: 1px 2px;
+                border-radius: 20px;
+                border: 1px solid;
+                font-size: 10px;
+                position: absolute;
+                margin-top: 2px;
+            }
+            li {
+                a {
+                    padding: 5px;
+                }
+                a:hover {
+                    color: #333;
+                }
+                .title {
+                    padding-left: 23px;
+                }
+            }
+            .locations li {
+                padding: 4px 0;
+            }
+            .meta-title {
+                color: #555555;
+                font-size: 14px;
+                font-weight: 400;
+                line-height: 30px;
+                text-align: left;
+                button {
+                    background-color: #fff;
+                    border: none;
+                    width: 100%;
+                    height: 100%;
+                    text-align: left;
+                }
+            }
+            .section {
+                .region, .date {
+                    box-shadow: none;
+                    text-align: left;
+                    border: none;
+                    background-color: #fff;
+                    padding: 0;
+                    height: 30px;
+                    line-height: 28px;
+
+                    .caret {
+                        float: right;
+                        margin-top: 15px;
+                        color: #808284;
+                    }
+                }
+
+                .region {
+                    border-bottom: solid 1px #e0e0e0;
+                }
+            }
+            .last {
+                min-height: 375px;
+            }
+            .dropdown-menu {
+                top: 33px;
+            }
+            .date-reset, .select-all {
+                background-color: #fff;
+                color: #396d85;
+                border: none;
+            }
+        }
+
+        .btn-group {
+            display: inline;
+            .dropdown-menu {
+                box-shadow: none;
+                top: 50px;
+            }
+            .region-dropdown {
+                top: 30px;
+                padding: 5px;
+            }
+        }
+
+        .padding-bottom {
+            padding-bottom: 110px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+
+            li {
+                cursor: pointer;
+            }
+        }
+    }
+
+    .styled-dropdown.text-mutted a {
+        color: #ccc;
+    }
+
+    .daterange-picker {
+        border-bottom: solid 1px #e0e0e0;
+        margin: 0;
+
+        .spacer {
+            padding: 0;
+            text-align: center;
+            line-height: 30px;
+        }
+
+        .from {
+            padding: 0;
+            width: 20%;
+        }
+
+        .to {
+            padding-left: 0;
+        }
+    }
+
+    input:focus {
+        outline: none !important;
+    }
+}

@@ -1,0 +1,31 @@
+#map-with-filter
+    .container.results-container
+        .row
+            .col-xs-12.col-md-6.col-md-offset-3
+                br
+                h4 Apply Filters
+        .row
+            .col-xs-4.col-md-2.col-md-offset-3
+                .form-group
+                    select.chosen-select.form-control(chosen="", data-placeholder="Filter by Methodology", ng-model="mapWithFilterComponent.filter.theme", ng-options="theme.name for theme in mapWithFilterComponent.themes track by theme.theme_id", ng-change="mapWithFilterComponent.clearRegionAndLocation(); mapWithFilterComponent.filterDatasets();")
+                        option(value="") All Themes
+            .col-xs-4.col-md-2
+                .form-group
+                    select.chosen-select.form-control(chosen="", data-placeholder="Filter by Region", ng-model="mapWithFilterComponent.filter.region", ng-options="region for region in mapWithFilterComponent.allRegions() track by region", ng-change="mapWithFilterComponent.clearLocation(); mapWithFilterComponent.filterDatasets();")
+                        option(value="") All Regions
+            .col-xs-4.col-md-2
+                .form-group
+                    select.chosen-select.form-control(chosen="", data-placeholder="Filter by Location", ng-model="mapWithFilterComponent.filter.location", ng-options="location.name for location in mapWithFilterComponent.uniqLocationsInSelectedRegion() track by location.name", ng-change="mapWithFilterComponent.filterDatasets()")
+                        option(value="") All Locations
+
+    div.map.loading-animation-parent.space-above
+        p.text-center.text-muted.p0.loading-animation(ng-if="mapWithFilterComponent.isWorking")
+            i.fa.fa-spinner.fa-spin
+            |  Retrieving results...
+        p.text-center.text-muted.loading-animation(ng-if="mapWithFilterComponent.noResults") No Results
+        leaflet(center="mapWithFilterComponent.center",
+            layers="mapWithFilterComponent.mapping.layers",
+            api="mapWithFilterComponent.api",
+            geojson="mapWithFilterComponent.mapping.geojson",
+            defaults="mapWithFilterComponent.mapping.defaults"
+            width="100%", height="400")

@@ -1,0 +1,39 @@
+nav.navbar.navbar-default.navbar-fixed-top
+    .container-fluid.navbar-before
+        .container
+            ul.list-inline
+                li
+                    a.btn.btn-xs.btn-dark(href="#/page/contact-us") contact
+                auth-login
+    .container
+        .navbar-header
+            button.navbar-toggle.collapsed(type="button", data-toggle="collapse", data-target="#navbar", aria-expanded="false", aria-controls="navbar")
+                span.sr-only Toggle navigation
+                span.icon-bar
+                span.icon-bar
+                span.icon-bar
+            a.navbar-brand(href="/#/", target="_parent")
+                img.logo(src="/img/logo-colour.png")
+        #navbar.navbar-collapse.collapse
+            ul.nav.navbar-nav
+                li: a(href="/#/") Home
+                li: a(href="/#/news") News
+                li: a(href="/#/search") Find Datasets
+                li: a.upload-data(href="/#/themes", ng-if="acl.isAuthenticated()") Upload Data
+                li.about-big: a.dropdown-toggle(href="", ng-mouseleave="closeSubnav()" ng-mouseenter="openSubnav()")
+                    | About
+                    span.caret
+                li.about-small: a.dropdown-toggle(href="", data-toggle="dropdown", role="button", aria-haspopup="true", aria-expanded="false")
+                    | About
+                    span.caret
+                    ul.dropdown-menu
+                        li: a(href="/#/page/about-us") DataStream
+                        li: a(href="/#/page/about-communities") Communities
+                        li: a(href="/#/page/become-a-data-steward") Become a Data Steward
+    #about.container-fluid(ng-class="{autoHeight: showSubnav}", ng-mouseleave="closeSubnav()" ng-mouseenter="openSubnav()")
+        .container
+            ul.nav.navbar-nav
+                li: a(href="/#/page/about-us") DataStream
+                li: a(href="/#/page/about-communities") Communities
+                li: a(href="/#/page/become-a-data-steward") Become a Data Steward
+                // li: a(href="/#/page/upload") How to Upload

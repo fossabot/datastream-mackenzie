@@ -1,0 +1,35 @@
+.panel.panel-warning
+    .panel-body
+        .row.print-page-2
+            .col-xs-2
+                img.left-bar(src="/img/MDS_Print_LHS.png")
+            .col-xs-10
+                h2.underline-green {{printableComponent.meta['title']}}
+                strong.print-font-sm {{printableComponent.theme.name}}
+                p.print-font-sm {{printableComponent.theme.description}}
+                br
+                .panel.panel-default
+                    .panel-body.p0
+                        leaflet(center="printableComponent.mapping.center", markers="printableComponent.markers", layers="printableComponent.mapping.layers", width="100%", height="400", id="datamap", defaults="printableComponent.mapping.defaults")
+
+        .row.print-page-2
+            .col-xs-2
+                img.left-bar(src="/img/MDS_Print_LHS.png")
+            .col-xs-10
+                .panel.panel-warning
+                    .panel-body
+                        .row.print-font-sm(ng-if="!printableComponent.form.visible")
+                            .col-md-3.col-xs-6
+                                span
+                                    strong Author:
+                                    | &nbsp;{{printableComponent.author(printableComponent.meta['email'])}}
+
+                            .col-md-3.col-xs-6(ng-repeat="field in printableComponent.theme.fields('meta')", ng-if="field.name !== 'location'")
+                                span(ng-class="{'text-muted':!printableComponent.meta[field.name]}")
+                                    strong {{field.title}}:
+                                    | &nbsp;{{printableComponent.meta[field.name]}}
+        .row
+            .col-xs-12
+                visualization.visualization(data="printableComponent.visData", theme="printableComponent.theme", tab="printableComponent.tab", upload-id="printableComponent.params.upload_id", guidelines="printableComponent.guidelines", is-working="printableComponent.isWorking")
+
+

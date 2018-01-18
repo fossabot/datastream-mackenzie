@@ -1,0 +1,282 @@
+div.multi-step
+    .modal(id="uploadDetailsModal{{multiStepComponent.theme.theme_id}}")
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    button.close(data-dismiss="modal") &times
+                    h4.modal-title Upload Details
+                .modal-body
+                    ul.list-unstyled
+                        li(ng-repeat="(key, value) in multiStepComponent.form.errors.validation")
+                            strong {{key |ucwords}}:
+                            |&nbsp;{{value}}
+
+    .form-wizard-wrapper
+        // form
+        div(ng-show="multiStepComponent.newRecordType === 'add-record'")
+            .modal-header
+                h4.modal-title
+                    |Add Record
+            .modal-body.form-new-item
+                p
+                    strong &lt; and ND values are not supported in single record uploads. To upload data containing these values please use the bulk upload option by selecting Upload CSV.
+                .form-wizard.wizard-horizontal
+                    ol.multistep
+                        li(ng-class="{active:multiStepComponent.form.current.step === 'adding'}")
+                            h4 Complete Form
+
+                    form(name="newForm_adding_{{multiStepComponent.theme.theme_id}}")
+                        p
+                        fieldset(id="form-data-fields", ng-bind-html="multiStepComponent.form.current.view")
+
+                ul.pager
+                    li
+                        button.btn.btn-danger(id="cta-save-record", ng-click="multiStepComponent.saveRecord()", ng-disabled="!multiStepComponent.isValid() || multiStepComponent.uploader.isWorking() || multiStepComponent.isWorking")
+                            i.fa(ng-class="{'fa-spinner fa-spin': multiStepComponent.uploader.isWorking()}")
+                            span &nbsp;Save
+                    li
+                        button.btn.btn-default(ng-click="multiStepComponent.close()") Cancel
+
+        // multistep
+        div(ng-show="multiStepComponent.newRecordType === 'dataset'")
+            //.alert.alert-danger(ng-show="multiStepComponent.errors.validation.length > 0 || multiStepComponent.errors.location.length > 0")
+            //    | Some of your data contains violation errors. You will need to fix them and re-upload the file.
+            //    | &nbsp;
+            //    a(href="/uploads/{{multiStepComponent.theme.theme_id}}/{{multiStepComponent.acl.getProfile('email')}}/violations.csv", target="_blank", ng-show="multiStepComponent.errors.validation.length > 0") More details
+
+            .alert.alert-danger(ng-show="multiStepComponent.errors.validation.length > 0")
+                p Some of your data contains violation errors. You will need to fix them and re-upload the file.
+                a(href="/uploads/{{multiStepComponent.theme.theme_id}}/{{multiStepComponent.acl.getProfile('email')}}/violations.csv", target="_blank", ng-show="multiStepComponent.errors.validation.length > 0") More details
+                div(ng-repeat="(key, val) in multiStepComponent.form.errors.validation")
+                    | {{key}}: {{val}}
+
+            .alert.alert-danger(ng-if="multiStepComponent.errors.message")
+                p(ng-bind-html="multiStepComponent.errors.message")
+
+            .alert.alert-success(ng-show="multiStepComponent.errors.resolved === true")
+                p Your validation errors have been resolved. Please re-upload the data file.
+
+            .modal-header
+                h4.modal-title {{multiStepComponent.form.title}}
+            .modal-body.form-new-item
+                .form-wizard.wizard-horizontal
+                    ol
+                        li(ng-repeat-start="step in multiStepComponent.steps()", ng-class="{active:step === multiStepComponent.form.current.step}")
+                            h4(ng-click="multiStepComponent.toggleStep(step)") {{multiStepComponent.form.steps[step]}}
+                        li.sp(ng-repeat-end, ng-if="!$last")
+
+                    form(name="newForm_basic_{{multiStepComponent.theme.theme_id}}", novalidate, ng-show="multiStepComponent.form.current.step === 'basic'")
+                        fieldset
+                            .row
+                                .col-sm-4.form-group
+                                    label(for="title") Title
+                                        span.required (required)
+                                    input.form-control(id="title", name="title", type="text", placeholder="Type the dataset title", ng-model="multiStepComponent.form.data.title", required)
+                                    small.text-danger(ng-if="multiStepComponent.isInvalidRequired('title')") This field is required.
+                                .col-sm-4.form-group
+                                    label(for="desc") Description
+                                        span.required (required)
+                                    input.form-control(id="desc", type="text", placeholder="Enter description", ng-model="multiStepComponent.form.data.description", required)
+
+                    form(name="newForm_metadata_{{multiStepComponent.theme.theme_id}}", novalidate, ng-show="multiStepComponent.form.current.step === 'metadata'", class="newForm_metadata newForm_metadata_{{multiStepComponent.theme.theme_id}}")
+                        fieldset(ng-show="multiStepComponent.form.current.step === 'metadata'", id="form-meta-fields-{{multiStepComponent.theme.theme_id}}", ng-bind-html="multiStepComponent.form.current.meta")
+
+                    form(name="newForm_program_{{multiStepComponent.theme.theme_id}}", novalidate, ng-show="multiStepComponent.form.current.step === 'program'")
+                        fieldset(ng-show="multiStepComponent.form.current.step === 'program'")
+                            .row
+                                .col-sm-4.form-group
+                                    label(for="name") Name
+                                        span.required (required)
+                                    input.form-control(id="name", name="name", type="text", placeholder="Type the program name", ng-model="multiStepComponent.form.program.name", required)
+                                .col-sm-4.form-group
+                                    label(for="doi") DOI
+                                    input.form-control(id="doi", name="doi", type="text", placeholder="Type the DOI", ng-model="multiStepComponent.form.program.doi")
+                                .col-sm-2.form-group
+                                    label(for="constraints") Constraints
+                                        span.required (required) &nbsp;
+                                            i.fa.fa-info-circle(data-toggle="tooltip" data-placement="top" data-html="true" title="<strong>Use Limitation:</strong> Basic mandatory element (if there is a constraint) that provides free text on any use limitation. <br /> <strong>Use Constraints:</strong> Restrictions, limitations or warnings to protect privacy, intellectual property, or other special restrictions on the resource or the metadata. <br /> <br />Please provide additional information in the program disclaimer on any use limitations or constraints.")
+                                    select.form-control(ng-model="multiStepComponent.form.program.contraints")
+                                        option(value="useLimitation") Use Limitation
+                                        option(value="useConstraints") Use Constraints
+                                        option(value="none") None
+                                .col-sm-2.form-group
+                                    label(for="iso-category") ISO Category
+                                        span.required (required)
+                                    select.form-control(ng-model="multiStepComponent.form.program.iso_category" ng-options="iso.name as iso.name for iso in multiStepComponent.iso")
+                            .row
+                                .col-sm-4.form-group
+                                    label(for="info") Info
+                                        span.required (required)
+                                    input.form-control(id="info", name="info", type="text", placeholder="Add information", ng-model="multiStepComponent.form.program.info", required)
+                                .col-sm-4.form-group
+                                    label(for="citation") Citation
+                                    input.form-control(id="citation", name="citation", type="text", placeholder="Type the citation", ng-model="multiStepComponent.form.program.citation")
+                                .col-sm-4.form-group
+                                    label(for="pdc-keywords") PDC Keywords
+                                        span.required (required) &nbsp;
+                                            i.fa.fa-info-circle(data-toggle="tooltip" data-placement="right" data-html="true" title="See the <a href='https://www.polardata.ca/pdcinput/public/keywordlibrary' target='_blank'>Polar Data Catalogue</a> for suggested keywords. <br /> Common keywords: <strong>Water Quality, Surface, Water, Mercury, Heavy Metals</strong>")
+                                    input.form-control(id="pdc-keywords", name="pdc-keywords", type="text", placeholder="Type the keywords", ng-model="multiStepComponent.form.program.pdc_keywords", required)
+                            .row
+                                .col-sm-4.form-group
+                                    label(for="abstract") Abstract
+                                        span.required (required)
+                                    textarea.form-control.tall(id="abstract", name="abstract", placeholder="Type the abstract", ng-model="multiStepComponent.form.program.abstract", required)
+                                .col-sm-4.form-group
+                                    label(for="purpose") Purpose
+                                        span.required (required)
+                                    textarea.form-control.tall(id="purpose", name="purpose", placeholder="Type the purpose", ng-model="multiStepComponent.form.program.purpose", required)
+                                .col-sm-4.form-group
+                                    label(for="disclaimer") Disclaimer
+                                        span.required (required) &nbsp;
+                                            i.fa.fa-info-circle(data-toggle="tooltip" data-placement="top" data-html="true" title="Please use/edit the DataStream disclaimer below or enter a new one.")
+                                    div.form-control.tall(id="disclaimer", name="disclaimer", ng-model="multiStepComponent.form.program.disclaimer", contenteditable="true", edit)
+                                        p Mackenzie DataStream is an open-access platform for sharing data for research, informational and educational purposes. The data made available on this website is not intended for commercial use. The website is owned and operated by the Walter and Duncan Gordon Charitable Foundation (the "Foundation"), which maintains copyrights in the compilation of data contained within the site.
+                                        p The data submitted by contributors to Mackenzie DataStream is not verified by the Foundation or the site`s partners. It is provided on an “as is” basis and there is no guarantee that the information is accurate, complete, current or suitable for any particular purpose. It is the responsibility of all persons who use this site to independently confirm the accuracy of the data, information or results obtained through its use. The Foundation and the site’s partners will not accept liability for damages of any kind that result from using the data made available through this website.
+                                        p Data inputted into Mackenzie DataStream by its contributors is open data that can be freely accessed, used, modified, re-used and redistributed by anyone, subject to the requirement to provide attribution of the data contributor and this website. Some data sets may contain additional restrictions on use or re-use. Users should consult the usage description that accompanies each data set and are required to abide by the respective usage terms and conditions.
+                            .row
+                                .col-md-12.text-right(style="padding-top: 10px;")
+                                    button.btn.btn-danger(ng-click="multiStepComponent.saveProgram()", ng-disabled="newForm_program_{{multiStepComponent.theme.theme_id}}.$invalid")
+                                        i.fa(ng-class="{'fa-spinner fa-spin': multiStepComponent.programSaving}")
+                                        span &nbsp;Save Program
+                                    button.btn.btn-default(ng-click="multiStepComponent.cancelProgram()", ng-disabled="multiStepComponent.programSaving") Cancel
+
+                    fieldset(ng-show="multiStepComponent.form.current.step === 'download'")
+                        p
+                            a(href="", ng-click="multiStepComponent.theme.download()") Theme CSV Template
+                        p Download this csv template with the required headers and populate it with data you wish to upload.
+
+                    fieldset(ng-show="multiStepComponent.form.current.step === 'upload'")
+                        .div(ng-show="multiStepComponent.agree === 0")
+                            .row
+                                .col-md-12
+                                    h4 Mackenzie Data Stream – Submission Terms of Use
+                                    p
+                                        | Mackenzie DataStream is an open-access platform for sharing data for research, informational and educational purposes. The data made available on this website is not intended for commercial use. The website is owned and operated by the Walter and Duncan Gordon Foundation (the “Foundation”), which maintains copyrights in the compilation of data contained within the site.
+                                    p
+                                        | Registered users are invited to contribute their own datasets to the website. The data submitted by contributors to Mackenzie DataStream is not verified by the Foundation or the site’s partners. All contributors agree to the abide by the website’s terms of use and all applicable laws.
+                                    p
+                                        | By submitting data to Mackenzie DataStream, you confirm that you have the necessary licences, rights, consents and permission to upload and post the dataset. You agree to grant Mackenzie DataStream a worldwide, non-exclusive, royalty-free, and transferable licence to use, reproduce, distribute, and display the dataset. You agree that to the best of your knowledge, the data submitted is accurate.
+                                    p
+                                        | You acknowledge that your data can be freely accessed, used, modified, re-used and redistributed by anyone for non-commercial purposes, subject to the requirement to provide appropriate attribution to you and this website. If you wish to establish additional limitations or conditions on the use or re-use of your data, you may specify them at the time of submission.
+                                    p
+                                        | You agree not to upload any material that is derogatory, defamatory, or otherwise unlawful. You agree not upload programs or other material that is malicious or technologically harmful. You agree not to attempt to gain unauthorized access to our network, website or servers.
+                                    p
+                                        | You acknowledge that the Foundation has the right to remove any data from the website at its sole discretion and that the Foundation and the site’s partners will not accept liability for damages of any kind that result from using the data made available through this website.
+                            .row
+                                .col-md-12
+                                    p
+                                        label
+                                            input(input type="checkbox", ng-model="multiStepComponent.agree", id="terms", value="1")
+                                            strong &nbsp;I Agree
+
+                        .row(ng-show="multiStepComponent.errors.validation.length > 0")
+                            .col-md-12
+                                table.table.table-hover.table-striped.validation-errors
+                                    thead
+                                        th Column
+                                        th Type
+                                        th Key
+                                        th Table
+                                        th Severity
+                                        th Comment
+                                        th Affected Rows
+                                    tbody
+                                        tr(ng-repeat="violation in multiStepComponent.errors.prettyValidation"
+                                        ng-class="{'text-danger': violation.violation_severity == 'error', 'text-warning':  violation.violation_severity === 'warning'}")
+                                            td(ng-repeat="key in multiStepComponent.getErrors(violation)", ng-if="key != '$$hashKey'")
+                                                |{{multiStepComponent.errorFile(violation,key)}}
+
+                        .row(ng-show="multiStepComponent.agree !== 0")
+                            .col-md-12
+                                p.pg-inputfile-pretty
+                                    input(type='file', id='datatheme-upload', file-collector, on-add="multiStepComponent.catchDataset(files)")
+
+                    fieldset(ng-show="multiStepComponent.form.current.step === 'location'")
+                        div(ng-show="multiStepComponent.addingLocation", id="locationForm")
+                            form(name="newForm_location_{{multiStepComponent.theme.theme_id}}", novalidate)
+                                .row
+                                    .col-xs-12.col-md-4
+                                        .form-group.row
+                                            h4 Enter a New Location
+                                        .form-group.row
+                                            label(for="name") Name
+                                                span.required (required)
+                                            input.form-control(input type="text", placeholder="name", ng-model="multiStepComponent.location.name", id="name", required)
+                                        .form-group.row
+                                            label(for="code") Site Code
+                                            input.form-control(input type="text", placeholder="site code", ng-model="multiStepComponent.location.site_code", id="code")
+                                        .form-group.row
+                                            label(for="region") Region
+                                                span.required (required)
+                                            input.form-control(input type="text", placeholder="region", ng-model="multiStepComponent.location.region", required)
+                                        .form-group.row
+                                            label(for="discontinued")
+                                                input(input type="checkbox", placeholder="discontinued", ng-model="multiStepComponent.location.discontinued", id="discontinued")
+                                                | &nbsp; Discontinued?
+                                        .form-group.row
+                                            label(for="latitude") Latitude
+                                                span.required (required)
+                                            input.form-control(input type="text", placeholder="latitude", ng-model="multiStepComponent.location.latitude", ng-change="multiStepComponent.updateLatLng()", required)
+                                        .form-group.row
+                                            label(for="longitude") Longitude
+                                                span.required (required)
+                                            input.form-control(input type="text", placeholder="longitude", ng-model="multiStepComponent.location.longitude", ng-change="multiStepComponent.updateLatLng()", required)
+                                        .form-group.row
+                                            button.btn.btn-danger(ng-click="multiStepComponent.saveLocation()", ng-disabled="newForm_location_{{multiStepComponent.theme.theme_id}}.$invalid")
+                                                i.fa(ng-class="{'fa-spinner fa-spin': multiStepComponent.locationFormSaving}")
+                                                span &nbsp;Save Location
+                                            button.btn.btn-default(ng-click="multiStepComponent.cancelLocation()", ng-disabled="multiStepComponent.locationFormSaving") Cancel
+                                            br
+                                            span.required {{multiStepComponent.locationFormError}}
+                                    .col-xs-12.col-md-8
+                                        leaflet(center="multiStepComponent.mapping.center", controls="multiStepComponent.controls", defaults="multiStepComponent.mapping.defaults", layers="multiStepComponent.mapping.layers", width="100%", height="500")
+
+                        .row(ng-show="multiStepComponent.errors.location.length > 0", id="locationViolationTable")
+                            .col-md-12
+                                table.table.table-hover.table-striped.location-errors
+                                    thead
+                                        th(class="col-md-2")
+                                        th(class="col-md-3") Location Name from File
+                                        th(class="col-md-2") Error
+                                        th(class="col-md-5") Use One of the Suggested Locations
+                                    tbody
+                                        tr(ng-repeat="violation in multiStepComponent.errors.location", ng-class="{'text-danger': true}")
+                                            td
+                                                button.btn.btn-danger(ng-click="multiStepComponent.showLocationForm(violation.name, violation.latitude, violation.longitude)", ng-disabled="multiStepComponent.addingLocation || multiStepComponent.savedLocations[violation.name] || violation.suggestion_msg")
+                                                    span(ng-hide="multiStepComponent.savedLocations[violation.name]") Create Location
+                                                    span(ng-show="multiStepComponent.savedLocations[violation.name]") Saved!
+                                            td(ng-bind-html="multiStepComponent.validateLocation(violation.name)")
+                                            td {{multiStepComponent.locationError(violation.name, violation.error)}}
+                                            td {{(!violation.suggestions.length && !violation.suggestion_msg ? 'No suggestions' : '')}}
+                                                span(ng-show="violation.suggestion_msg") {{violation.suggestion_msg}}
+                                                    a.revert-suggestion(href="" ng-click="multiStepComponent.clearLocation(violation.name)") Revert
+                                                p(ng-repeat="suggestion in violation.suggestions")
+                                                    a.suggestion(href="" ng-show="!violation.suggestion_msg" ng-click="multiStepComponent.replaceLocation(violation.name,suggestion.name)" title="{{suggestion.name}}")
+                                                        | {{suggestion.name}}{{suggestion.nearby ? ' (within 100m)' : ''}}
+
+                    fieldset(ng-show="multiStepComponent.form.current.step === 'done'")
+                        h3.mt0(id="label-dataset-uploaded") Dataset uploaded.
+                        p Please note: it can take up to 5 minutes for your changes and additions to appear in DataStream. Please be patient and check back shortly.
+
+                ul.pager(ng-show="multiStepComponent.form.current.step != 'done'")
+                    li.previous
+                        button.btn.btn-default(ng-click="multiStepComponent.changeStep('previous')", ng-show="multiStepComponent.form.current.step != multiStepComponent.form.firstStep", ng-disabled="multiStepComponent.uploader.isWorking() || multiStepComponent.isWorking")
+                            span Previous
+                    li.next
+                        button.btn.btn-danger.has-icon(ng-click="multiStepComponent.changeStep('next')", ng-show="multiStepComponent.form.current.step != 'upload' && multiStepComponent.form.current.step != 'location' && multiStepComponent.form.current.step != 'program'", ng-disabled="multiStepComponent.uploader.isWorking() ||!multiStepComponent.isValid() || multiStepComponent.isWorking")
+                            span Next
+                            span.fa.fa-chevron-right
+                    li
+                        button.btn.btn-danger(id="cta-upload-dataset", ng-click="multiStepComponent.uploadDataset()", ng-show="multiStepComponent.form.current.step == 'upload'", ng-disabled="multiStepComponent.uploader.isWorking() || !multiStepComponent.uploader.isReady() || !multiStepComponent.agree || multiStepComponent.isWorking")
+                            i.fa(ng-class="{'fa-spinner fa-spin': multiStepComponent.uploader.isWorking() || multiStepComponent.isWorking}")
+                            span &nbsp;Upload
+                    li
+                        button.btn.btn-danger(id="cta-update-dataset", ng-click="multiStepComponent.uploadDataset(true)", ng-show="multiStepComponent.form.current.step == 'location'", ng-disabled="multiStepComponent.uploader.isWorking() || multiStepComponent.isWorking")
+                            i.fa(ng-class="{'fa-spinner fa-spin': multiStepComponent.uploader.isWorking() || multiStepComponent.isWorking}")
+                            span &nbsp;Update
+                    li
+                        button.btn.btn-default(id="cta-cancel-multi-step", ng-click="multiStepComponent.close()", ng-disabled="multiStepComponent.uploader.isWorking() || multiStepComponent.isWorking") Cancel
+
+                ul.pager(ng-show="multiStepComponent.form.current.step === 'done'")
+                    li
+                        button.btn.btn-danger(ng-click="multiStepComponent.close()") Close

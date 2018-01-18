@@ -1,0 +1,40 @@
+aside.aside.visible-md.visible-lg(ng-class="{'half-height': isActive('/')}", style="z-index: 1001;")
+    .aside-inner
+        nav.sidebar(sidebar="")
+            ul.nav
+                li.nav-heading
+                    span.Main Navigation
+                li(ng-class="{active: isActive('/search/map') || isActive('/search/text')}")
+                    a(href="#/search/map?type=map")
+                        i.fa.fa-search.fa-lg
+                        span Search
+
+                li(ng-class="{active: isActive('/themes')}", ng-if="acl.isAuthenticated()")
+                    a(href="#/themes")
+                        i.fa.fa-files-o.fa-lg
+                        span Upload Data
+
+                li(ng-class="{active: isActive('/settings')}", ng-if="acl.isAuthenticated()")
+                    a(href="#/settings")
+                        i.fa.fa-cog.fa-lg
+                        span Settings
+
+                li(ng-class="{active: isActive('/page/about-us')}")
+                    a(href="#/page/about-us")
+                        i.fa.fa-info.fa-lg
+                        span About
+
+                li(ng-class="{active: isActive('/page/contact-us')}")
+                    a(href="#/page/contact-us")
+                        i.fa.fa-share.fa-lg
+                        span Contact Us
+
+                li(ng-class="{active: isActive('/page/data-policy')}")
+                    a(href="#/page/data-policy")
+                        i.fa.fa-database.fa-lg
+                        span Data Policy
+
+                li(ng-class="{active: isActive('/page/terms-of-use')}")
+                    a(href="#/page/terms-of-use")
+                        i.fa.fa-exclamation.fa-lg
+                        span Terms of Use

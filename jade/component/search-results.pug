@@ -1,0 +1,123 @@
+div
+    leaflet(center="searchResultsComponent.mapping.center",
+        layers="searchResultsComponent.mapping.layers",
+        api="searchResultsComponent.api",
+        geojson="searchResultsComponent.mapping.geojson",
+        defaults="searchResultsComponent.mapping.defaults"
+        ng-style="searchResultsComponent.getHeight()")
+        width="100%"
+        br
+
+    .omnibox(
+        ng-style="searchResultsComponent.getHeight('form')"
+        ng-class="{'with-results': searchResultsComponent.isActive()}"
+    )
+            form(ng-submit="searchResultsComponent.searchDatasets()", id='search-form')
+                .content
+                    .mui-textfield
+                        i.fa.fa-search
+                        a.filter(ng-click="searchResultsComponent.toggleFilter()", ng-class="{'active': searchResultsComponent.isQueried()}")
+                            i.material-icons filter_list
+
+                        input(
+                            ng-model="searchResultsComponent.form.term",
+                            placeholder='Search DataStream',
+                            ng-focus="searchResultsComponent.toggleFocus()"
+                        )
+
+                    div(ng-if="(!searchResultsComponent.isFiltered() && searchResultsComponent.focused) || searchResultsComponent.filter", style="border-top: solid 1px #eee")
+                        .mui-select
+                            i.fa.fa-folder
+                            select.chosen-select.form-control(chosen="", data-placeholder="Filter by Methodology", ng-model="searchResultsComponent.search.theme", ng-change="searchResultsComponent.searchDatasets()")
+                                option(value="") Filter By Methodology
+                                option(ng-repeat="theme in searchResultsComponent.searchService.themes", ng-selected="{{theme.theme_id === searchResultsComponent.search.theme}}", value="{{theme.theme_id}}")
+                                    | {{theme.name}}
+
+                        .mui-select
+                            i.fa.fa-map
+                            select.chosen-select.form-control(chosen="", data-placeholder="Filter by Region", ng-model="searchResultsComponent.search.region", ng-change="searchResultsComponent.searchDatasets()")
+                                option(value="") Filter By Region
+                                option(ng-repeat="region in searchResultsComponent.searchService.regions", ng-selected="{{region === searchResultsComponent.search.region}}", value="{{region}}")
+                                    | {{region}}
+
+                        .mui-select
+                            i.fa.fa-map-marker
+                            select.chosen-select.form-control(chosen="", data-placeholder="Filter by Location", ng-model="searchResultsComponent.search.location", ng-change="searchResultsComponent.searchDatasets()")
+                                option(value="") Filter By Location
+                                option(ng-repeat="location in searchResultsComponent.searchLocations", ng-selected="{{location === searchResultsComponent.search.location}}", value="{{location.name}}")
+                                    | {{location.name}}
+
+                    div(ng-if="searchResultsComponent.isFiltered() && searchResultsComponent.focused && !searchResultsComponent.filter", style="border-top: solid 1px #eee")
+                        ul.filters
+                            li(ng-repeat="dataset in searchResultsComponent.filtered.datasets")
+                                a(ng-click="searchResultsComponent.setFilterFromTerm('dataset', dataset.upload_id)")
+                                    i.fa.fa-database
+                                    span {{dataset.title}}
+
+                            li(ng-repeat="location in searchResultsComponent.filtered.locations")
+                                a(ng-click="searchResultsComponent.setFilterFromTerm('location', location)")
+                                    i.fa.fa-map-marker
+                                    span {{location}}
+
+                            li(ng-repeat="region in searchResultsComponent.filtered.regions")
+                                a(ng-click="searchResultsComponent.setFilterFromTerm('region', region)")
+                                    i.fa.fa-map
+                                    span {{region}}
+
+                            li(ng-repeat="theme in searchResultsComponent.filtered.themes")
+                                a(ng-click="searchResultsComponent.setFilterFromTerm('theme', theme)")
+                                    i.fa.fa-folder
+                                    span {{theme}}
+
+
+            .results(
+                ng-if="searchResultsComponent.isActive()",
+                ng-style="{'padding-top': '60px'}",
+                ng-click="searchResultsComponent.toggleFocus(false)"
+            )
+                .content(ng-scrollbars="", ng-scrollbars-config="searchResultsComponent.scrollbarsConfig")
+                    ul
+                        li
+                            div(ng-if="searchResultsComponent.isActive()")
+                                .row
+                                    .col-xs-12(ng-if="searchResultsComponent.isQueried()")
+                                        ul.chips
+                                            li Filter by:
+                                            li(ng-if="searchResultsComponent.search.theme.length > 0")
+                                                div.chip.clearfix
+                                                    span {{searchResultsComponent.search.theme}}
+                                                    a.fa.fa-times-circle(ng-click="searchResultsComponent.setFilterFromTerm('theme', '')") &nbsp;
+                                            li(ng-if="searchResultsComponent.search.location.length > 0")
+                                                div.chip.clearfix
+                                                    span {{searchResultsComponent.search.location}}
+                                                    a.fa.fa-times-circle(ng-click="searchResultsComponent.setFilterFromTerm('location', '')") &nbsp;
+                                            li(ng-if="searchResultsComponent.search.region.length > 0")
+                                                div.chip.clearfix
+                                                    span {{searchResultsComponent.search.region}}
+                                                    a.fa.fa-times-circle(ng-click="searchResultsComponent.setFilterFromTerm('region', '')") &nbsp;
+
+                                    .col-xs-6
+                                        .btn-group
+                                            button.btn.btn-default.btn-xs.dropdown-toggle(type="button" data-toggle="dropdown")
+                                                | Sort by: {{searchResultsComponent.getSortValue()}}&nbsp;
+                                                span.caret &nbsp;
+                                            ul.dropdown-menu
+                                                li
+                                                    a(ng-click="searchResultsComponent.setSortTerm('modified')") Date updated
+                                                li
+                                                    a(ng-click="searchResultsComponent.setSortTerm('title')") Dataset name
+
+                                    .col-xs-6.text-right
+                                        | Found {{searchResultsComponent.results.length}} datasets
+
+                        li.result(ng-repeat="result in searchResultsComponent.results")
+                            a(ng-href="{{searchResultsComponent.getViewUri(result.theme_id, result.upload_id)}}",
+                                ng-mouseover="searchResultsComponent.toggleMarker(result.upload_id)",
+                                ng-mouseout="searchResultsComponent.toggleMarker()"
+                            )
+                                strong.new(ng-if="searchResultsComponent.isNew(result)") NEW
+                                strong {{result.title}}
+                                span {{result.theme.name}}
+                                span {{result.program_name}}
+                                span {{result.description}}
+                                span Last updated on {{result.modified | date: 'MMM d, y'}}

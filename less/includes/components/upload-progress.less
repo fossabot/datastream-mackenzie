@@ -1,0 +1,83 @@
+.list-inline {
+    &.upload-progress {
+        list-style: none;
+        overflow: hidden;
+        min-width: 360px;
+        li {
+            float: left;
+            padding: 0;
+            margin: 0;
+
+            span {
+                text-align: left;
+                color: white;
+                text-decoration: none;
+                padding: 4px 8px 4px 50px;
+                border-radius: 0;
+                position: relative;
+                display: block;
+                float: left;
+                background-color: @gray-light;
+
+                &.error {
+                    background-color: @brand-danger;
+
+                    &:after {
+                        border-left: 30px solid @brand-danger;
+                    }
+                }
+
+                &.success {
+                    background-color: @brand-success;
+
+                    &:after {
+                        border-left: 30px solid @brand-success;
+                    }
+                }
+
+                &.warning {
+                    background-color: @brand-warning;
+
+                    &:after {
+                        border-left: 30px solid @brand-warning;
+                    }
+                }
+
+                &:before {
+                    content: " ";
+                    display: block;
+                    width: 0;
+                    height: 0;
+                    border-top: 50px solid transparent;           /* Go big on the size, and let overflow hide */
+                    border-bottom: 50px solid transparent;
+                    border-left: 30px solid @body-bg;
+                    position: absolute;
+                    top: 50%;
+                    margin-top: -50px;
+                    margin-left: 1px;
+                    left: 100%;
+                    z-index: 1;
+                }
+
+                &:after {
+                    content: " ";
+                    display: block;
+                    width: 0;
+                    height: 0;
+                    border-top: 50px solid transparent;           /* Go big on the size, and let overflow hide */
+                    border-bottom: 50px solid transparent;
+                    border-left: 30px solid @gray-light;
+                    position: absolute;
+                    top: 50%;
+                    margin-top: -50px;
+                    left: 100%;
+                    z-index: 2;
+                }
+            }
+
+            &:first-child span {
+                padding-left: 30px;
+            }
+        }
+    }
+}

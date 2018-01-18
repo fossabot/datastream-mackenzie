@@ -1,0 +1,114 @@
+.dataset {
+
+    #datamap {
+
+        .dropdown {
+            display: inline-block;
+        }
+
+        .links {
+            margin-top:1em;
+            text-align: right;
+        }
+
+        .controls {
+            margin-bottom:1em;
+        }
+    }
+
+    #details {
+        background-color: @mackenzie-light;
+        padding-top:3em;
+        padding-bottom: @container-padding-bottom;
+
+        & > .container > ul {
+            background-color:@mackenzie-light;
+            border-bottom:1px solid @mackenzie-another-grey;
+
+            li {
+
+                a {
+                    cursor:pointer;
+                    border:none;
+                    margin:0;
+                    color:@mackenzie-grey;
+                    background-color:#fff;
+                    border-left:1px solid @mackenzie-another-grey;
+                    border-top:1px solid @mackenzie-another-grey;
+
+                    &:hover {
+                        border-color:@mackenzie-another-grey;
+                    }
+                }
+
+                &:last-child a {
+                    border-right:1px solid @mackenzie-another-grey;
+                }
+
+                &.active {
+                    a, a:active, a:hover:active, a:focus {
+                        background-color:@mackenzie-pink;
+                        color:#fff;
+                        border-color: @mackenzie-pink;
+                    }
+
+                    a:hover {
+                        cursor:pointer;
+                        border-right-color:transparent;
+                    }
+                }
+            }
+        }
+
+        .tab-content {
+            border:1px solid @mackenzie-another-grey;
+            background-color:#fff;
+            padding:1.5em;
+
+            > .tab-pane {
+                border: 1px solid @mackenzie-another-grey;
+                padding:1.5em;
+
+                .row > div {
+                    word-wrap: break-word;
+                }
+            }
+        }
+    }
+
+    .vector-marker {
+        .fa-circle {
+            font-size: 10px;
+        }
+    }
+
+    .heading-container {
+        overflow-x: hidden;
+    }
+
+    .dataset-container {
+        max-height: 400px;
+    }
+
+    .row.is-flex {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-flex-wrap: wrap;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+
+    .row.is-flex > [class*='col-'] {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+        flex-direction: column;
+    }
+}

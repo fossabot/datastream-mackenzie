@@ -1,0 +1,183 @@
+body {
+    .banner {
+        width:100%;
+        position: absolute;
+        top:143px;
+        color: #fff;
+
+        @media (min-width: @screen-sm-min) {
+            top:200px;
+        }
+
+        h2 {
+            font-size:4em;
+            font-weight:300;
+            color:#fff;
+            line-height:0.87em;
+            text-transform:uppercase;
+        }
+
+        p {
+            line-height: 2em;
+
+            a {
+                color:#fff;
+            }
+        }
+
+        a.btn {
+            margin-left: 10px;
+            font-size: 100%;
+        }
+    }
+
+    .threes {
+        color: @mackenzie-grey;
+        background-color:@mackenzie-light;
+
+        .btn {
+            font-size:100%;
+        }
+
+
+        > .row > .col-sm-4 {
+            @media (min-width: @screen-md-max) {
+                padding: 0 3em;
+            }
+        }
+
+        img {
+
+            @media(min-width: @screen-xs-max) {
+                width:100px;
+                height:100px;
+            }
+
+            @media(max-width: @screen-xs-max) {
+                display:none;
+            }
+        }
+
+        h2 {
+            text-transform: uppercase;
+            font-size: 2.188em;
+        }
+
+        h2.text-blue {
+            border-bottom: 1px solid @mackenzie-blue;
+        }
+
+        h2.text-green {
+            border-bottom: 1px solid @mackenzie-green;
+        }
+
+        h2.text-pink {
+            border-bottom: 1px solid @mackenzie-pink;
+        }
+
+        .moreinfo {
+            text-align: right;
+            margin-top:1em;
+
+            a.btn {
+                text-align: right;
+                margin-bottom:2em;
+            }
+        }
+
+        .data-preview {
+            padding-bottom:5px;
+            display: block;
+
+            & + .data-preview {
+                padding-top:5px;
+                border-top: 1px solid @mackenzie-grey;
+
+                &.news {
+                    border-top: 1px solid @mackenzie-pink;
+                }
+            }
+
+            div {
+                display:block;
+
+                &.name {
+                    font-weight:400;
+                }
+
+                &.date {
+                    font-size:70%;
+                }
+
+                &.desc {
+                    font-size:85%;
+                }
+            }
+        }
+
+        table {
+
+            tr td {
+
+                &:first-child {
+                    width:100%;
+                }
+
+                vertical-align: middle;
+                span.fa.fa-chevron-right {
+                    color:@mackenzie-pink;
+                }
+            }
+        }
+    }
+
+    #data-preview {
+
+        img {
+            margin-top:2.5em;
+            margin-bottom:2.5em;
+        }
+    }
+
+    .data-steward {
+        height:425px;
+        background-image:url(/img/canoe.jpg);
+        background-position: center;
+        color: #fff;
+        text-align: center;
+
+        .row-padded {
+            padding-top:6em;
+
+            h2 {
+                font-weight:200;
+                text-transform: uppercase;
+                font-size: 2.8em;
+                color:#fff;
+            }
+        }
+    }
+
+    .video {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+
+        iframe#player {
+            border: 0;
+            height: 100%;
+            width: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .close {
+            color: #fff;
+            opacity: 0.8;
+            margin-top: 5px;
+            display: none;
+            position: absolute;
+            right: 5px;
+        }
+    }
+}

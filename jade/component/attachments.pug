@@ -1,0 +1,38 @@
+div.attachments
+    button.btn.btn-danger(id="cta-add-a-record", ng-click="attachmentsComponent.add()", ng-if="attachmentsComponent.form.enabled && !attachmentsComponent.form.visible")
+        | Add attachment
+
+    div.multi-step(ng-if="attachmentsComponent.form.visible")
+        .form-wizard-wrapper
+            div
+                h4 Add Attachment
+                .form-new-item
+                    .form-wizard.wizard-horizontal
+                        fieldset
+                            div.form-group
+                                label Description
+                                span.required &nbsp;(required)
+                                input.form-control(type="text", ng-model="attachmentsComponent.form.description")
+                            div
+                                label Select File
+                                span.required &nbsp;(required)
+                                input(type="file", ng-model="attachmentsComponent.form.file", filereader)
+
+                    ul.pager
+                        li
+                            button.btn.btn-danger(id="cta-save-record", ng-click="attachmentsComponent.save()", ng-disabled="attachmentsComponent.form.description.length === 0 || attachmentsComponent.form.file === null || attachmentsComponent.form.working")
+                                i.fa(ng-class="{'fa-spinner fa-spin': attachmentsComponent.form.working}")
+                                span &nbsp;Save
+                        li
+                            button.btn.btn-default(ng-click="attachmentsComponent.close()") Cancel
+
+    div
+        br
+        p(ng-if="attachmentsComponent.attachments.length === 0") No attachments found.
+
+        p(ng-repeat="attachment in attachmentsComponent.attachments")
+            a(href="", ng-if="attachmentsComponent.form.enabled", ng-click="attachmentsComponent.delete(attachment.id, attachment.filename)")
+                i.fa.fa-trash
+            | &nbsp;
+            a(href="{{attachment.location}}") {{attachment.filename}}
+            | - {{attachment.description}}

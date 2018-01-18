@@ -1,0 +1,8 @@
+li
+    a.btn.btn-xs.btn-dark(ng-if="acl.isAuthenticated()", href="/#/settings") settings
+    a.btn.btn-xs.btn-dark.has-icon.cta-logout(ng-if="acl.isAuthenticated()", ng-click="authLoginComponent.logout()")
+        span sign out
+        span: i.fa.fa-chevron-right
+    a.btn.btn-xs.btn-dark.has-icon.cta-login(ng-if="!acl.isAuthenticated()", ng-click="authLoginComponent.login()")
+        span join
+        span: i.fa.fa-chevron-right

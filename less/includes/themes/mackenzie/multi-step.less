@@ -1,0 +1,97 @@
+.multi-step {
+    .form-group {
+        label {
+            text-transform: capitalize;
+        }
+    }
+
+    ol {
+        padding-left: 0;
+        list-style-type: none;
+
+        li {
+            padding: 0;
+            margin: 0;
+            display: inline-block;
+
+            h4 {
+                font-size: 0.88em;
+                color: #c2c2c2;
+            }
+
+            &.active h4 {
+                color: #575757;
+            }
+
+            &.sp {
+                width: 0.6em;
+                height: 0.3em;
+                border-top: 1px solid silver;
+                margin: 0 0.3em;
+            }
+        }
+    }
+
+    ul.pager {
+        background-color: transparent;
+        border: 0;
+        text-align: left;
+
+        li {
+            .btn {
+                margin-right: 5px;
+            }
+        }
+    }
+
+    .btn-dark {
+        color: #fff;
+        background-color: @mackenzie-another-grey;
+
+        &:hover, &:active, &:focus, &:active:focus {
+            background-color:darken(@mackenzie-another-grey, 10%);
+            border-color:darken(@mackenzie-another-grey, 10%);
+        }
+    }
+
+    button {
+        margin-right: 5px;
+    }
+
+    .suggestion {
+        overflow: hidden;
+        width: 100%;
+        text-overflow: ellipsis;
+        margin-bottom: 5px;
+    }
+
+    .revert-suggestion {
+        float: right;
+    }
+
+    .newForm_metadata {
+        .label-for-title, .label-for-description {
+            display: none;
+        }
+    }
+
+    .tall {
+        height: 150px;
+        overflow: scroll;
+    }
+
+    .tooltip {
+        min-width: 200px !important;
+    }
+
+    td {
+        &:last-child {
+            color: #888;
+        }
+
+        p {
+            margin: 0;
+            padding: 0;
+        }
+    }
+}

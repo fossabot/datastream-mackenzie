@@ -1,0 +1,81 @@
+.carousel.curved-shadow(slick="{dots: false, autoplay: true, arrows: true, autoplaySpeed: 4000, adaptiveHeight: true}")
+    div.a-slide(style="background: transparent url(/img/ice.jpg) no-repeat bottom left; background-size: cover !important;")
+        .video
+            a.close(href="#/" ng-click="closeVideo()", id="close-video")
+                i.fa.fa-close &nbsp;
+            iframe(id="player" allowfullscreen)
+
+.container-fluid.banner(id="banner")
+    .container
+        .row
+            .col-md-6
+                include:marked ../markdown/banner.md
+
+map-with-filter
+
+.container-fluid.threes
+    .container
+        .row.row-padded
+            .col-sm-4.col-narrowed
+                .text-center
+                    a(href="#/page/about-communities"): img(src="/img/globe.svg")
+                a.no-hover(href="#/page/about-communities"): h2.text-green Communities
+                p Community-based monitoring plays a vital role in generating the data needed to understand and protect the Mackenzie Basin. Learn more about the communities monitoring their waters and sharing their findings on Mackenzie DataStream.
+            .col-sm-4.col-narrowed
+                .text-center
+                    a(href="https://medium.com/@Mackenzie_DataStream/"): img(src="/img/newspaper.svg")
+                a.no-hover(href="https://medium.com/@Mackenzie_DataStream/"): h2.text-pink News
+                div.data-preview.news(ng-repeat="story in news | limitTo:3")
+                    table
+                        tr
+                            td
+                                a.name(ng-href="{{getNewsLink(story)}}") {{story.title}}
+                                div.date {{story.pubdate}}
+                            td
+                                span.fa.fa-chevron-right
+                br
+                a.btn.btn-default.has-icon(href="#/news")
+                    span Read More
+                    span: i.fa.fa-chevron-right &nbsp;
+            .col-sm-4.col-narrowed
+                .text-center
+                    a(href="#/search"): img(src="/img/graph.svg")
+                a.no-hover(href="#/search"): h2.text-blue Data
+                div.data-preview(ng-repeat="ds in latest | limitTo:3")
+                    table
+                        tr
+                            td
+                                a.name(ng-href="{{getDatasetLink(ds)}}") New Dataset - {{ds.title}}
+                                div.date {{ds.modified | date:'MMMM d, yyyy'}}
+                            td
+                                span.fa.fa-chevron-right
+
+#data-preview
+    .container
+        .row
+            .col-sm-6
+                h2 Data Preview
+                p Check out Mackenzie DataStream’s visualization tools to find and view the data you are interested in and compare results from different regions.
+                ol
+                    li Select your dataset
+                    li Create customized graphs
+                    li Capture and share results using the reporting tools
+            .col-sm-6
+                p.text-center
+                    a(href="#/search")
+                        img(src="/img/home-visualization.png", alt="visualization screenshot here", style="max-width:100%;")
+
+.data-steward
+    .container
+        .row.row-padded
+            .col-sm-6.col-sm-offset-3
+                h2
+                    span.text-pink Become
+                    |  a
+                    br
+                    span.text-green  data
+                    |  steward
+                p(style="line-height:2em;") Mackenzie DataStream is only as strong as the data it holds. We are actively seeking new partners throughout the Basin. Becoming a DataStream Data Steward will allow you to join our growing network and amplify the impacts of your water monitoring efforts.
+                a.btn.btn-xs.btn-see-through.has-icon.text-center(href="#/page/become-a-data-steward")
+                    span How
+                    span: i.fa.fa-chevron-right

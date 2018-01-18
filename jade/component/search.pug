@@ -1,0 +1,6 @@
+.search
+    div(id="searchPanel").loading-animation-parent
+        p.text-center.text-muted.p0.loading-animation(ng-if="searchComponent.isWorking")
+            i.fa.fa-spinner.fa-spin
+            |&nbsp;Retrieving results...
+        search-results(results="searchComponent.results", locations="searchComponent.locations", map="'true'")

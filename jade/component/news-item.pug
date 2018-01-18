@@ -1,0 +1,14 @@
+section#news-container
+    .curved-shadow.random-heading(style="background-image: url(/img/dgt.jpg);")
+    .container.text-page
+        .back-link.space-above
+            a(href='/#/news')
+                span.fa.fa-chevron-left
+                | &nbsp;
+                | Back to News
+        hr
+        .story
+            h2 {{story.title}}
+            .space-above(ng-bind-html="story.content")
+        .space-above &nbsp;
+        .space-above &nbsp;
